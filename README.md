@@ -28,7 +28,7 @@ ln -s "$(pwd)/humanify" /path/to/your/project/.claude/skills/humanify
 ```
 /humanify              # scan and rewrite the target text
 /humanify --scan       # report findings only, no edits
-/humanify --help       # prints the argument summary, takes no other action
+/humanify --help       # reads and displays help.md verbatim, takes no other action
 ```
 
 See `SKILL.md` for the full list of banned phrases, AI vocabulary tiers, and structural checks.

@@ -1,7 +1,9 @@
 humanify - Detect and rewrite AI writing tells in any long-form text.
 
 USAGE
-  /humanify                Reads the target text in full, runs every check (banned
+  /humanify                Resolves the target text (confirms it if a file was
+                            already named, asks if not), reads it in full, runs
+                            every check (banned
                             phrases, AI vocabulary, copula substitution, participle
                             endings, elegant variation, list variety, punctuation
                             personality), applies fixes while preserving the author's

@@ -11,15 +11,16 @@ Detects and rewrites the linguistic patterns that make text read as AI-generated
 
 - `/humanify` (no args) - Run the full pass on the target text (the file or pasted content the user points to)
 - `/humanify --scan` - Report findings only; do not edit the text. Useful for a quick read on how "AI" a draft sounds before deciding whether to revise.
-- `/humanify --help` - Prints this skill's summary and argument list, without scanning or editing anything.
+- `/humanify --help` - Do not run any other part of this skill. Read and display the contents of `help.md` (in this skill's folder) verbatim, then stop.
 
 ## Workflow
 
-1. **Read the target text in full** before touching anything - patterns like elegant variation and copula substitution require paragraph-level context, not line-by-line editing.
-2. **Run every check below** against the text and collect findings (phrase, location, suggested fix).
-3. If invoked as `/humanify --scan`, stop here and output the findings report (see Output Format).
-4. Otherwise, apply fixes directly, preserving the author's argument and any deliberate stylistic touches (informal asides, humor, first-person process notes - these are features, not bugs, and should never be stripped).
-5. Report what changed, grouped by category, in the Output Format below.
+1. **Resolve the target document.** If the user's invocation or the current conversation already names a specific file or pasted block of text, confirm it before proceeding: "Running humanify against `<path or description>` - confirm?" If no target was specified, ask the user which file or pasted text to check. Never guess or scan an entire project for candidate documents.
+2. **Read the target text in full** before touching anything - patterns like elegant variation and copula substitution require paragraph-level context, not line-by-line editing.
+3. **Run every check below** against the text and collect findings (phrase, location, suggested fix).
+4. If invoked as `/humanify --scan`, stop here and output the findings report (see Output Format).
+5. Otherwise, apply fixes directly, preserving the author's argument and any deliberate stylistic touches (informal asides, humor, first-person process notes - these are features, not bugs, and should never be stripped).
+6. Report what changed, grouped by category, in the Output Format below.
 
 ## Banned Phrases
 
