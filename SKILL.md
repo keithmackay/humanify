@@ -1,26 +1,48 @@
 ---
 name: humanify
 description: Use when editing AI-drafted or AI-assisted prose to strip out AI writing tells - banned clichés, AI-favored vocabulary, copula substitution, participle-ending sentences, elegant variation, and other patterns that read as machine-generated. Works on any long-form text (articles, posts, emails, docs).
+license: MIT
 ---
 
 # Humanify
 
 Detects and rewrites the linguistic patterns that make text read as AI-generated, without flattening the author's actual voice. This is a redline pass, not a rewrite from scratch: preserve the argument, the structure, and any intentional stylistic choices already present. Only touch what's flagged below.
 
+This skill's checks are English-specific. If the target text is not primarily English, say so plainly in the report instead of returning an empty findings list.
+
+**Sections:** [Arguments](#arguments) · [Workflow](#workflow) · [Protected Content](#protected-content) · [Banned Phrases](#banned-phrases) · [Use Sparingly](#use-sparingly) · [AI Vocabulary](#ai-vocabulary---words-to-actively-avoid) · [Structural Checks](#structural-checks) · [Output Format](#output-format)
+
 ## Arguments
 
-- `/humanify` (no args) - Run the full pass on the target text (the file or pasted content the user points to)
-- `/humanify --scan` - Report findings only; do not edit the text. Useful for a quick read on how "AI" a draft sounds before deciding whether to revise.
+See `help.md` for the full argument list (`--dry-run`, `--voice`, `--help`).
+
 - `/humanify --help` - Do not run any other part of this skill. Read and display the contents of `help.md` (in this skill's folder) verbatim, then stop.
 
 ## Workflow
 
+0. **Calibrate voice.** If `--voice` was provided, read the calibration sample(s) first and note which house-style checks (those labelled *house style* below) it overrides. If no sample was provided, apply house-style checks at their documented default (flag them) and say so in the report's UNCHANGED section rationale, e.g. "em-dash retained - no --voice sample provided to confirm authorial intent."
 1. **Resolve the target document.** If the user's invocation or the current conversation already names a specific file or pasted block of text, confirm it before proceeding: "Running humanify against `<path or description>` - confirm?" If no target was specified, ask the user which file or pasted text to check. Never guess or scan an entire project for candidate documents.
 2. **Read the target text in full** before touching anything - patterns like elegant variation and copula substitution require paragraph-level context, not line-by-line editing.
-3. **Run every check below** against the text and collect findings (phrase, location, suggested fix).
-4. If invoked as `/humanify --scan`, stop here and output the findings report (see Output Format).
-5. Otherwise, apply fixes directly, preserving the author's argument and any deliberate stylistic touches (informal asides, humor, first-person process notes - these are features, not bugs, and should never be stripped).
-6. Report what changed, grouped by category, in the Output Format below.
+3. **Check scope and size.** If the target text is under ~300 words, or is not prose (a table, changelog, bullet-only outline, code, or structured data), skip document-level checks that require multiple paragraphs to evaluate: punctuation-personality, list-variety, and elegant-variation. State in the report which checks were skipped and why, rather than silently omitting them or forcing an irregularity into short text.
+4. **Identify protected spans** (per [Protected Content](#protected-content)) before collecting findings. Exclude them from edits; still surface them in the report as "found in protected content - not modified."
+5. **Read `references/tells.md`** before running checks - do not treat this as optional or skip it under time pressure.
+6. **Run every check below** against the text and collect findings (phrase, location, suggested fix).
+7. If invoked as `/humanify --dry-run`, stop here and output the dry-run report (see [Output Format](#output-format)).
+8. Otherwise, **apply fixes as targeted, minimal edits to the flagged span only** - never a full-document rewrite. Preserve the author's argument and any deliberate stylistic touches (informal asides, humor, first-person process notes - these are features, not bugs, and should never be stripped). After all edits are applied, re-scan the result once to confirm no new banned phrase or AI-vocabulary hit was introduced by the edits themselves. If a second run is invoked on already-processed text, treat it as a fresh pass: only flag remaining issues, and do not add a new punctuation irregularity if the punctuation-personality check already passed in this document.
+9. Report what changed, grouped by category, in the format described under [Output Format](#output-format).
+
+## Protected Content
+
+Before applying any edit, identify and never alter:
+
+- direct quotations and block quotes
+- cited or paraphrased source material already under citation
+- code blocks and inline code
+- URLs
+- proper nouns and product names
+- legal and compliance boilerplate
+
+If a banned phrase or flagged vocabulary word appears inside protected content, list it in the report as "found in protected content - not modified" rather than silently skipping or silently fixing it.
 
 ## Banned Phrases
 
@@ -95,21 +117,20 @@ Do not use these, or close variants of them:
 
 Not banned outright - these constructions are legitimate but overused in AI text. One per document, at most, and only when it's genuinely the sharpest way to make the point:
 
-- **"It's not X, it's Y"** (unhedged form) - fine occasionally, monotonous as a recurring crutch
-- **"As X continues to..."** - vague temporal filler; prefer a concrete development or date
-- **"From X to Y" ranges** - even when X and Y are on a meaningful scale, overuse flattens the prose; reserve for when the range itself is the point
-- **Rule-of-three constructions** ("adapt, innovate, and transform") - one per document at most; AI defaults to triads reflexively, so vary the count
-- **Symmetrical contrasts** ("Technology creates possibilities. People create value.") - punchy the first time, formulaic the third; don't build a document's structure around repeating the pattern
+- **"It's not X, it's Y"** (unhedged form) - fine occasionally, monotonous as a recurring crutch. *(AI tell - always applies.)*
+- **"As X continues to..."** - vague temporal filler; prefer a concrete development or date. *(AI tell - always applies.)*
+- **"From X to Y" ranges** - even when X and Y are on a meaningful scale, overuse flattens the prose; reserve for when the range itself is the point. *(AI tell - always applies.)*
+- **Rule-of-three constructions** ("adapt, innovate, and transform") - one per document at most; AI defaults to triads reflexively, so vary the count. *(House style - overridable by `--voice`. Skip this check entirely if the calibration sample shows the author uses triads deliberately and repeatedly.)*
+- **Symmetrical contrasts** ("Technology creates possibilities. People create value.") - punchy the first time, formulaic the third; don't build a document's structure around repeating the pattern. *(House style - overridable by `--voice`. Skip this check entirely if the calibration sample shows the author uses symmetrical contrast as a signature move.)*
 
 ## AI Vocabulary - Words to Actively Avoid
 
-These words appear at significantly higher rates in AI-generated text. Flag and replace any occurrence:
+These words appear at significantly higher rates in AI-generated text. Flag any occurrence, but confirm it is being used as vague praise or filler rather than as a technical term of art (e.g. "significantly" in a statistics context, "robust" in an engineering-tolerance context, "comprehensive" as a formal document classification) before replacing it. When in doubt, flag it in the report as a judgment call rather than auto-replacing.
 
 **Core AI tells (highest priority):**
 vibrant, crucial, significantly, testament, delve, showcase, tapestry, nuanced, multifaceted, pivotal, transformative, robust (as vague praise), leveraging (as filler), comprehensive, innovative (as generic praise), meticulous/meticulously, intricate/intricacies
 
-**Second tier:**
-align/aligns with, bolstered, cultivating, fostering, garnered, interplay, landscape (abstract use), enduring, boasts, nestled, diverse array, renowned, groundbreaking, encompasses, commitment to, highlighting, underscoring, emphasizing, ensuring, reflecting, symbolizing, contributing to
+**Second tier:** see `references/tells.md` (read it in Workflow step 5; it is not optional).
 
 **Verb attribution tells:**
 - Prefer "says" over "notes" or "argues" when simple attribution is accurate
@@ -117,32 +138,14 @@ align/aligns with, bolstered, cultivating, fostering, garnered, interplay, lands
 
 ## Structural Checks
 
-- **Copula check** - no "serves as / stands as / marks / represents" where "is" would be cleaner
-- **Participle-ending check** - no sentences closing with "...contributing to / fostering / ensuring / reflecting [vague outcome]"
-- **Punctuation personality check** - the document should contain at least one intentional irregularity (fragment, ellipsis, parenthetical aside); grammatically flawless text is itself an AI tell
-- **Elegant variation check** - no synonym chains for the same person or entity within a paragraph (protagonist / main character / central figure / hero); repeat the noun or use a pronoun
-- **List variety check** - not every bulleted list has exactly three items; vary lengths deliberately (two, four, five, or none)
-- **No fragmented headers** - no section that opens with a one-line restatement of its own heading before real content begins (e.g., "## Performance" followed by "Speed matters." followed by actual content - cut the restatement)
-- **Em-dash check** - if the target voice avoids em-dashes (—), replace with colons, periods, parentheses, or a double-hyphen (`--`) used as a deliberate stylistic choice. Skip this check entirely if the author's established voice uses em-dashes freely; it is a house-style preference, not a universal rule.
+- **Copula check** - no "serves as / stands as / marks / represents" where "is" would be cleaner. *(AI tell - always applies.)*
+- **Participle-ending check** - no sentences closing with "...contributing to / fostering / ensuring / reflecting [vague outcome]". *(AI tell - always applies.)*
+- **Punctuation personality check** - the document should contain at least one intentional irregularity (fragment, ellipsis, parenthetical aside); grammatically flawless text is itself an AI tell. *(House style - overridable by `--voice`. Skip this check entirely if the calibration sample shows the author writes uniformly formal, irregularity-free prose.)*
+- **Elegant variation check** - no synonym chains for the same person or entity within a paragraph (protagonist / main character / central figure / hero); repeat the noun or use a pronoun. *(AI tell - always applies.)*
+- **List variety check** - not every bulleted list has exactly three items; vary lengths deliberately (two, four, five, or none). *(AI tell - always applies.)*
+- **No fragmented headers** - no section that opens with a one-line restatement of its own heading before real content begins (e.g., "## Performance" followed by "Speed matters." followed by actual content - cut the restatement). *(AI tell - always applies.)*
+- **Em-dash check** - if the target voice avoids em-dashes (—), replace with colons, periods, parentheses, or a double-hyphen (`--`) used as a deliberate stylistic choice. *(House style - overridable by `--voice`. Skip this check entirely if the author's established voice uses em-dashes freely.)*
 
 ## Output Format
 
-```
-HUMANIFY REPORT: [target file/text]
-
-BANNED PHRASES FOUND: [N]
-- "[phrase]" at [location] -> [suggested fix or "removed"]
-
-AI VOCABULARY FLAGGED: [N]
-- "[word]" at [location] -> [replacement]
-
-STRUCTURAL ISSUES: [N]
-- [check name]: [location] -> [what was done]
-
-UNCHANGED (flagged but left as-is, with reason):
-- [item]: [reason - e.g. "part of author's established voice"]
-
-SUMMARY: [N] changes made across [N] categories.
-```
-
-If invoked with `--scan`, omit the "changes made" framing and instead report every finding with a recommendation, without applying anything.
+See `references/report-format.md` for the edit-mode and dry-run report templates; read it before producing the final report.

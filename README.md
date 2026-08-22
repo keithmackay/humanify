@@ -7,7 +7,9 @@ A Claude Code skill that detects and rewrites the linguistic patterns that make 
 - **Banned phrase list** - clichéd pivots, weak contrast constructions, significance inflation, throat-clearing, faux-revelation transitions, and more
 - **AI vocabulary scan** - flags words that appear at significantly higher rates in AI-generated text (vibrant, crucial, delve, tapestry, nuanced, transformative...) with a ranked priority tier
 - **Structural checks** - copula substitution, participle endings, elegant variation chains, list-length uniformity, fragmented headers, punctuation personality
-- **Non-destructive scan mode** - `--scan` reports findings without editing, so you can gauge how "AI" a draft sounds before committing to a revision
+- **Non-destructive dry run** - `--dry-run` reports findings without editing and gives a findings-per-1,000-words density figure (with rough bands) so you can gauge how "AI" a draft sounds before committing to a revision
+- **Voice calibration** - `--voice <file>` reads a sample of the author's own prior writing and suppresses house-style checks the sample shows are deliberate
+- **Protected content** - quotes, citations, code, URLs, and proper nouns are flagged but never edited
 
 ## Getting Started
 
@@ -26,12 +28,13 @@ ln -s "$(pwd)/humanify" /path/to/your/project/.claude/skills/humanify
 ## Usage
 
 ```
-/humanify              # scan and rewrite the target text
-/humanify --scan       # report findings only, no edits
-/humanify --help       # reads and displays help.md verbatim, takes no other action
+/humanify                 # check and rewrite the target text
+/humanify --dry-run       # report findings only, no edits
+/humanify --voice <file>  # calibrate house-style checks against a writing sample
+/humanify --help          # reads and displays help.md verbatim, takes no other action
 ```
 
-See `SKILL.md` for the full list of banned phrases, AI vocabulary tiers, and structural checks.
+`help.md` is the authoritative argument reference; `SKILL.md` is the source of truth for behavior - the full list of banned phrases, AI vocabulary tiers, and structural checks. Report templates live in `references/report-format.md` and the second-tier vocabulary list in `references/tells.md`.
 
 ## Contributing
 
