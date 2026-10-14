@@ -18,7 +18,7 @@ See `help.md` for the full argument list (`--dry-run`, `--voice`, `--version`, `
 
 - `/humanify --help` - Do not run any other part of this skill. Read and display the contents of `help.md` (in this skill's folder) verbatim, then stop.
 - `/humanify --version` - Do not run the workflow. Instead:
-  1. Read the installed version from this skill's own manifest (`.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, or `gemini-extension.json`) if one exists; else the topmost version heading in `CHANGELOG.md`; else, if `.git` exists here, the latest tag (`git describe --tags --abbrev=0`, strip a leading `v`). If no version can be determined, say so and stop.
+  1. Read the installed version from this skill's own manifest (`.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, or `gemini-extension.json`, in this folder or the plugin root above `skills/`) if one exists; else the topmost version heading in `CHANGELOG.md`; else, if `.git` exists here, the latest tag (`git describe --tags --abbrev=0`, strip a leading `v`). If no version can be determined, say so and stop.
   2. Print: `humanify v<installed-version>`
   3. Best-effort update check: take `owner/repo` from `git remote get-url origin` (a `github.com` URL), else the first `https://github.com/<owner>/<repo>` URL in `README.md`. If neither resolves or `gh` is unavailable, stop silently.
   4. Run `gh api repos/<owner>/<repo>/releases/latest -q .tag_name` (strip a leading `v`) and append `Status: up to date`, `Status: newer version available (v<latest>)` (with a `git pull` hint for the install directory), or `Status: ahead of latest release (development checkout)`. On any API failure, print nothing further.

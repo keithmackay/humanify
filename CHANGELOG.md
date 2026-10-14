@@ -16,6 +16,19 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ### Security
 
+## [1.1.0] - 2026-10-14
+
+### Added
+
+- Codex support: `.codex-plugin/plugin.json` and `skills/humanify/`.
+- Gemini CLI support: `gemini-extension.json` and `GEMINI.md`.
+- Antigravity support (the root `SKILL.md` follows the open Agent Skills format).
+- Installation instructions and a compatibility matrix for all four platforms in the README.
+
+### Changed
+
+- The README and docs now describe humanify as a cross-agent skill, not only a Claude Code skill.
+
 ## [1.0.0] - 2026-10-14
 
 ### Added

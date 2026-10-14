@@ -1,0 +1,6 @@
+{
+  "name": "humanify",
+  "version": "1.1.0",
+  "description": "Use when editing AI-drafted or AI-assisted prose to strip out AI writing tells - banned clichés, AI-favored vocabulary, copula substitution, participle-ending sentences, elegant variation, and other patterns that read as machine-generated. Works on any long-form text (articles, posts, emails, docs).",
+  "skills": "./skills/"
+}
