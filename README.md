@@ -60,6 +60,10 @@ Issues:  https://github.com/keithmackay/humanify/issues
 
 Pull requests are welcome - fork the repo, make your change, and open a PR describing what it does and why.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
+
 ## License
 
 [MIT](LICENSE)
