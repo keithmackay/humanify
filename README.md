@@ -15,6 +15,15 @@ A Claude Code skill that detects and rewrites the linguistic patterns that make 
 
 ### Installation
 
+#### From the mackayi marketplace (recommended)
+
+```
+/plugin marketplace add keithmackay/mackayi
+/plugin install humanify@mackayi
+```
+
+#### Manual
+
 ```bash
 git clone https://github.com/keithmackay/humanify.git
 
