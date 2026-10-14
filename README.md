@@ -31,10 +31,21 @@ ln -s "$(pwd)/humanify" /path/to/your/project/.claude/skills/humanify
 /humanify                 # check and rewrite the target text
 /humanify --dry-run       # report findings only, no edits
 /humanify --voice <file>  # calibrate house-style checks against a writing sample
+/humanify --version       # prints the installed version and checks for updates
 /humanify --help          # reads and displays help.md verbatim, takes no other action
 ```
 
 `help.md` is the authoritative argument reference; `SKILL.md` is the source of truth for behavior - the full list of banned phrases, AI vocabulary tiers, and structural checks. Report templates live in `references/report-format.md` and the second-tier vocabulary list in `references/tells.md`.
+
+## About
+
+```
+Version 1.0.0 · MIT license
+Source:  https://github.com/keithmackay/humanify
+Author:  Keith MacKay <technofacto@gmail.com>
+Update:  git -C ~/.claude/skills/humanify pull
+Issues:  https://github.com/keithmackay/humanify/issues
+```
 
 ## Contributing
 

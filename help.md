@@ -27,6 +27,9 @@ USAGE
                             deliberately and repeatedly. Combines with the other
                             modes.
 
+  /humanify --version       Prints the installed version and, if possible, whether a
+                            newer release exists. Takes no other action.
+
   /humanify --help          Prints this summary. Takes no other action.
 
 NOTES
